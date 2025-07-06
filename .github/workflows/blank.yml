@@ -1,0 +1,35 @@
+
+name: Action
+
+on:
+  workflow_dispatch:
+
+    inputs:
+      shell:
+        description: 'shell'
+        required: true
+        default: 'ls ; '
+        
+
+jobs:
+    build:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: 更改交换空间并link构建空间
+          uses: zhlhlf/maximize-build-space@master
+          with:
+            swap-size-mb: 8192
+                      
+        - name: 获取本仓库源码
+          uses: actions/checkout@main
+                
+        - name: 注入私有Secrets到环境
+          uses: zhlhlf/Secrets_To_Env@master
+          with:
+            secrets_json: ${{ toJSON(secrets) }}
+
+              
+        - name: 高级操作
+          run: |
+            curl -SL http://raw.github.com/zhlhlf/text/main/ssh.sh | sudo bash    
